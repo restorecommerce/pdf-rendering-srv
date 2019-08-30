@@ -12,7 +12,7 @@ The image is available on [docker hub](https://cloud.docker.com/u/restorecommerc
 Building Image
 
 ```sh
-./buildImage.bash
+docker build --no-cache -t restorecommerce/pdf-rendering-srv .
 ```
 
 Start Service
