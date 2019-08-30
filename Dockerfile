@@ -14,7 +14,6 @@ RUN mkdir $HOME
 WORKDIR $HOME
 # Chown all the files to the app user.
 RUN chown -R app:app $HOME
-RUN cd $HOME
 RUN pwd
 # Change to the app user.
 USER app

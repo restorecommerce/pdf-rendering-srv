@@ -20,13 +20,13 @@ before_install:
   - ls -ahl
   - "export PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
   - sudo curl -sSL https://get.docker.com/ | sh
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  # - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker version
 
 script:
   - docker build -t $REPO:$TAG -t $REPO:$PACKAGE_VERSION .
 
-after_success:
-  - docker images
-  - docker push $REPO:$TAG
-  - docker push $REPO:$PACKAGE_VERSION
+# after_success:
+#   - docker images
+#   - docker push $REPO:$TAG
+#   - docker push $REPO:$PACKAGE_VERSION
