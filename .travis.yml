@@ -1,0 +1,30 @@
+sudo: required
+
+language: node_js
+node_js:
+  - "12.4.0"
+
+branches:
+  only:
+  - master
+
+before_install:
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo ${TRAVIS_BRANCH} ; fi`
+  - echo $TAG
+  - export REPO='restorecommerce/pdf-rendering-srv'
+  - echo $REPO
+  - git clone https://github.com/onesdk/url-to-pdf-api.git pdf-rendering-srv
+  - cd pdf-rendering-srv
+  - ls -ahl
+  - "export PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
+  - sudo curl -sSL https://get.docker.com/ | sh
+  # - echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+  - docker version
+
+script:
+  - docker build -t $REPO:$TAG -t $REPO:$PACKAGE_VERSION .
+
+# after_success:
+#   - docker images
+#   - docker push $REPO:$TAG
+#   - docker push $REPO:$PACKAGE_VERSION
