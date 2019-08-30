@@ -16,6 +16,7 @@ before_install:
   - git clone https://github.com/alvarcarto/url-to-pdf-api
   - cd url-to-pdf-api
   - cp -r * /home/travis/build/restorecommerce/pdf-rendering-srv/
+  - cd ..
   - ls -ahl
   - "export PACKAGE_VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]')"
   - sudo curl -sSL https://get.docker.com/ | sh
