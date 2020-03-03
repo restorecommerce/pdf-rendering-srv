@@ -1,24 +1,23 @@
 # pdf-rendering-srv
 
-Docker image for rendering PDFs from HTML. Good for receipts, invoices, or any content.
+Docker image for rendering PDFs from HTML. Good for receipts, invoices, or any other content.
 It uses the [chrome-headless-trunk](https://github.com/alpeware/chrome-headless-trunk)
 as base image for Chrome and packages the [url-to-pdf-api](https://github.com/alvarcarto/url-to-pdf-api)
 library to form a solid and easy-to-use microservice.
 
-The image is available on [docker hub](https://cloud.docker.com/u/restorecommerce/repository/docker/restorecommerce/pdf-rendering-srv).
+The image is available on [docker hub](https://hub.docker.com/repository/docker/restorecommerce/pdf-rendering-srv).
 
 ## Running
 
-Building Image
+Building the image:
 
 ```sh
 docker build --no-cache -t restorecommerce/pdf-rendering-srv .
 ```
 
-Start Service
+Starting the service:
 
 ```sh
-# Start pdf-render-srv
 docker run \
  --name restorecommerce_pdf_rendering_srv \
  -e ALLOW_HTTP=true \
