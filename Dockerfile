@@ -1,4 +1,4 @@
-FROM alpeware/chrome-headless-trunk:rev-691036
+FROM alpeware/chrome-headless-trunk:rev-736695
 RUN apt-get update -y && apt-get install -yq fontconfig fonts-dejavu curl gnupg git && rm -rf /var/lib/apt/lists/*
 # install node
 RUN curl -sL https://deb.nodesource.com/setup_12.x  | bash -
@@ -19,7 +19,7 @@ RUN pwd
 USER app
 RUN git clone https://github.com/alvarcarto/url-to-pdf-api pdf-rendering-srv
 WORKDIR $APP_HOME
-RUN npm install
+RUN npm install --only=prod
 
 EXPOSE 9000
-CMD [ "npm", "start" ]
+CMD [ "node", "." ]
