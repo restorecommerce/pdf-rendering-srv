@@ -6,12 +6,12 @@ A Docker image for rendering PDFs from HTML.
 == Features
 
 * Good for receipts, invoices, or any other content.
-* It uses the https://github.com/alpeware/chrome-headless-trunk[`chrome-headless-trunk`]
-as base image for Chrome and packages the https://github.com/alvarcarto/url-to-pdf-api[`url-to-pdf-api`]
+* It uses the https://github.com/alpeware/chrome-headless-trunk[chrome-headless-trunk]
+as base image for Chrome and packages the https://github.com/alvarcarto/url-to-pdf-api[url-to-pdf-api]
 library to form a solid and easy-to-use microservice.
 
 **Note**: currently restore and reset is not implemented.The image is available on
-https://hub.docker.com/repository/docker/restorecommerce/pdf-rendering-srv[`docker hub`].
+https://hub.docker.com/repository/docker/restorecommerce/pdf-rendering-srv[docker hub].
 
 [#configuration]
 == Configuration
@@ -57,7 +57,7 @@ curl -o index.pdf -XPOST -d@index.html -H 'content-type: text/html' 'localhost:9
 [#usage_with_pdf_options]
 === With PDF Options
 
-The service supports sll https://github.com/alvarcarto/url-to-pdf-api#get-apirender[`options`] provided by which can be passed as query
+The service supports all https://github.com/alvarcarto/url-to-pdf-api#get-apirender[options] provided by which can be passed as query
 parameters:
 
 [source,sh]
