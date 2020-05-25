@@ -10,7 +10,7 @@ A Docker image for rendering PDFs from HTML.
 as base image for Chrome and packages the https://github.com/alvarcarto/url-to-pdf-api[url-to-pdf-api]
 library to form a solid and easy-to-use microservice.
 
-**Note**: currently restore and reset is not implemented.The image is available on
+The image is available on
 https://hub.docker.com/repository/docker/restorecommerce/pdf-rendering-srv[docker hub].
 
 [#configuration]
