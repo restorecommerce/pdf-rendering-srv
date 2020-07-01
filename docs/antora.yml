@@ -1,0 +1,5 @@
+name: pdf-rendering-srv
+title: PDF Rendering Service
+version: master
+nav:
+  - modules/ROOT/nav.adoc
