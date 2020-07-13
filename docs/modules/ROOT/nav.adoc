@@ -1,1 +1,16 @@
-* xref:index.adoc[pdf-rendering-srv]
+// INDEX
+* xref:index.adoc[PDF Rendering Service]
+
+// FEATURES
+* xref:index.adoc#features[Features]
+
+// CONFIGURATION
+* xref:index.adoc#configuration[Configuration]
+** xref:index.adoc#configuration_install_extra_fonts[Installing Extra Fonts]
+
+// USAGE
+* xref:index.adoc#usage[Usage]
+** xref:index.adoc#usage_with_url[With URL]
+** xref:index.adoc#usage_with_html_file[With HTML File]
+** xref:index.adoc#usage_with_pdf_options[With PDF Options]
+** xref:index.adoc#usage_with_api_key[With API Key]
