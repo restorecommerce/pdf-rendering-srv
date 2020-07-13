@@ -1,4 +1,4 @@
-FROM alpeware/chrome-headless-trunk:rev-736695
+FROM alpeware/chrome-headless-trunk:rev-786673
 RUN apt-get update -y && apt-get install -yq fontconfig fonts-dejavu curl gnupg git && rm -rf /var/lib/apt/lists/*
 # install node
 RUN curl -sL https://deb.nodesource.com/setup_12.x  | bash -
