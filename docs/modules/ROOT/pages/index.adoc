@@ -70,7 +70,7 @@ An HTML document which uses the Microsoft Fonts as in this example,
 </body>
 </html>
 ----
-will be rendered by the `pdf-rendering-srv` as shown in the image link:../assets/images/pdf.jpg[pdf.jpg].
+will be rendered by the `pdf-rendering-srv` as shown in the image link:https://github.com/restorecommerce/pdf-rendering-srv/blob/master/docs/modules/ROOT/assets/images/pdf.jpg[pdf.jpg].
 
 [#usage_with_pdf_options]
 === With PDF Options
