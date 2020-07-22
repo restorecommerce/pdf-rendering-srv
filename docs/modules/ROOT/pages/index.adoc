@@ -69,7 +69,7 @@ An HTML document which uses the Microsoft Fonts as in this example,
 </html>
 ----
 will be rendered by the `pdf-rendering-srv` as shown:
-image::pdf-render.png[]
+image::pdf-render.png[pdf-render]
 
 [#usage_with_pdf_options]
 === With PDF Options
