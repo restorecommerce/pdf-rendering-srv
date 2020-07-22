@@ -9,6 +9,7 @@ A Docker image for rendering PDFs from HTML.
 * It uses the https://github.com/alpeware/chrome-headless-trunk[chrome-headless-trunk]
 as base image for Chrome and packages the https://github.com/alvarcarto/url-to-pdf-api[url-to-pdf-api]
 library to form a solid and easy-to-use microservice.
+* Supports MS fonts (Arial, Courier, Times New Roman, etc.).
 
 The image is available on
 https://hub.docker.com/repository/docker/restorecommerce/pdf-rendering-srv[docker hub].
@@ -32,6 +33,24 @@ apt-get install -yq fonts-noto-cjk     # 囍, 언문, にほんご
 apt-get install -yq fonts-ocr-b        # PASSPORT FONT
 ----
 
+An HTML document which uses the Microsoft Fonts as in this example,
+[source,html]
+----
+<!DOCTYPE html>
+<html>
+<body>
+
+<p style="font-family:Arial">This is another paragraph - Arial.</p>
+<p style="font-family:Courier">This is another paragraph - Courier.</p>
+<p style="font-family:Comic Sans MS">This is another paragraph - Comic Sans MS.</p>
+<p style="font-family:Times New Roman">This is another paragraph - Times New Roman.</p>
+
+</body>
+</html>
+----
+will be rendered by the `pdf-rendering-srv` as shown:
+image::pdf-render.png[]
+
 
 [#usage]
 == Usage
@@ -42,7 +61,6 @@ apt-get install -yq fonts-ocr-b        # PASSPORT FONT
 [source,sh]
 ----
 curl -o google.pdf -XGET localhost:9000/api/render?url=http://google.com
-
 ----
 
 [#usage_with_html_file]
@@ -51,7 +69,6 @@ curl -o google.pdf -XGET localhost:9000/api/render?url=http://google.com
 [source,sh]
 ----
 curl -o index.pdf -XPOST -d@index.html -H 'content-type: text/html' 'localhost:9000/api/render'
-
 ----
 
 [#usage_with_pdf_options]

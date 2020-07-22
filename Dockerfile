@@ -1,5 +1,10 @@
 FROM alpeware/chrome-headless-trunk:rev-786673
-RUN apt-get update -y && apt-get install -yq fontconfig fonts-dejavu curl gnupg git && rm -rf /var/lib/apt/lists/*
+# install dependencies
+RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
+RUN apt-get update -y &&\
+ DEBIAN_FRONTEND=noninteractive apt-get install -yq\
+ fontconfig fonts-dejavu ttf-mscorefonts-installer curl gnupg git &&\
+ rm -rf /var/lib/apt/lists/*
 # install node
 RUN curl -sL https://deb.nodesource.com/setup_12.x  | bash -
 RUN apt-get -y install nodejs
