@@ -1,5 +1,7 @@
 = PDF Rendering Service
 
+:imagesdir: assets/images
+
 A Docker image for rendering PDFs from HTML.
 
 [#features]
@@ -69,7 +71,7 @@ An HTML document which uses the Microsoft Fonts as in this example,
 </html>
 ----
 will be rendered by the `pdf-rendering-srv` as shown:
-image::pdf-render.png[pdf-render]
+image::pdf.jpg[pdf-render]
 
 [#usage_with_pdf_options]
 === With PDF Options
