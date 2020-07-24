@@ -26,5 +26,7 @@ RUN git clone https://github.com/alvarcarto/url-to-pdf-api pdf-rendering-srv
 WORKDIR $APP_HOME
 RUN npm install --only=prod
 
+HEALTHCHECK CMD sh -c 'if [ $(curl -I -s -o /dev/null -w "%{http_code}" http://localhost:9000/) = "403" ]; then exit 0; else exit 1; fi'
+
 EXPOSE 9000
 CMD [ "node", "." ]
