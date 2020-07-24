@@ -21,7 +21,7 @@ WORKDIR $APP_HOME
 RUN git clone --depth 1 https://github.com/alvarcarto/url-to-pdf-api . \
   && npm install --only=production
 
-HEALTHCHECK CMD sh -c 'if [ $(curl -I -s -o /dev/null -w "%{http_code}" http://localhost:9000/) = "403" ]; then exit 0; else exit 1; fi'
+HEALTHCHECK CMD curl -I http://localhost:9000/
 
 EXPOSE 9000
 CMD [ "node", "." ]
