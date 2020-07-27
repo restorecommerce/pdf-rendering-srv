@@ -1,7 +1,5 @@
 = PDF Rendering Service
 
-:imagesdir: assets/images
-
 A Docker image for rendering PDFs from HTML.
 
 [#features]
