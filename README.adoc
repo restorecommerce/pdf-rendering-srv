@@ -1,9 +1,10 @@
 = PDF Rendering Service
 
-A Docker image for rendering PDFs from HTML part of the
-link:https://github.com/restorecommerce[Restorecommerce].
+A microservice for HTML to PDF rendering.
 
 Please consult the documentation for using it:
 
 - *link:https://docs.restorecommerce.io/pdf-rendering-srv/index.html[Usage]*
 - *link:https://docs.restorecommerce.io/architecture/index.html[General Architecture]*
+
+Part of link:https://github.com/restorecommerce[Restorecommerce].
