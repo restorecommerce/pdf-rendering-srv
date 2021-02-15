@@ -1,4 +1,4 @@
-FROM alpeware/chrome-headless-trunk:rev-786673
+FROM alpeware/chrome-headless-trunk:rev-853884
 # install dependencies
 RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections
 RUN apt-get update -y &&\
