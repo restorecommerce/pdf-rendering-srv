@@ -1,7 +1,6 @@
 npm-debug.log
 
 node_modules/
-coverage/
 
 .project
 .settings
@@ -10,7 +9,3 @@ coverage/
 
 *.log
 *~
-
-.dockerignore
-buildImage.bash
-Dockerfile
