@@ -1,12 +1,15 @@
 # syntax = docker/dockerfile:experimental
 
-FROM alpeware/chrome-headless-trunk:rev-853884
+FROM browserless/chrome:latest
 
-RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections \
-  && apt update -y \
-  && apt install -y fontconfig fonts-dejavu ttf-mscorefonts-installer curl gnupg git \
-  && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-  && apt install -y nodejs \
+ENV BROWSER_EXECUTABLE_PATH=$CHROME_PATH
+ENV PORT=9000
+
+USER root
+
+RUN apt update -y \
+  && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+  && apt install -y fonts-dejavu ttf-mscorefonts-installer gnupg nodejs \
   && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd --gid 1000 node \
