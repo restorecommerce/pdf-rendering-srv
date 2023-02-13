@@ -1,5 +1,3 @@
-# syntax = docker/dockerfile:experimental
-
 FROM browserless/chrome:latest
 
 ENV BROWSER_EXECUTABLE_PATH=$CHROME_PATH
