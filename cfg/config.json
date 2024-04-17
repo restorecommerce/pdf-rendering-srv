@@ -1,0 +1,62 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 50069
+  },
+
+  "s3": {
+    "client": {
+      "region": "eu-central-1",
+      "endpoint": "http://127.0.0.1:8000",
+      "access_key": "accessKey1",
+      "secret_key": "verySecretKey1",
+      "s3_force_path_style": true
+    }
+  },
+
+  "serviceNames": {
+    "ostorage": "io-restorecommerce-ostorage-srv",
+    "reflection": "io-restorecommerce-ostorage-reflection",
+    "cis": "io-restorecommerce-ostorage-cis",
+    "health": "grpc-health-v1"
+  },
+
+  "client": {
+    "user": {
+      "address": "http://localhost:50051"
+    }
+  },
+
+  "authorization": {
+    "urns": {
+      "entity": "urn:restorecommerce:acs:names:model:entity",
+      "user": "urn:restorecommerce:acs:model:user.User",
+      "model": "urn:restorecommerce:acs:model",
+      "role": "urn:restorecommerce:acs:names:role",
+      "roleScopingEntity": "urn:restorecommerce:acs:names:roleScopingEntity",
+      "roleScopingInstance": "urn:restorecommerce:acs:names:roleScopingInstance",
+      "unauthenticated_user": "urn:restorecommerce:acs:names:unauthenticated-user",
+      "property": "urn:restorecommerce:acs:names:model:property",
+      "ownerIndicatoryEntity": "urn:restorecommerce:acs:names:ownerIndicatoryEntity",
+      "ownerInstance": "urn:restorecommerce:acs:names:ownerInstance",
+      "orgScope": "urn:restorecommerce:acs:model:organization.Organization",
+      "subjectID": "urn:oasis:names:tc:xacml:1.0:subject:subject-id",
+      "resourceID": "urn:oasis:names:tc:xacml:1.0:resource:resource-id",
+      "actionID": "urn:oasis:names:tc:xacml:1.0:action:action-id",
+      "action": "urn:restorecommerce:acs:names:action",
+      "operation": "urn:restorecommerce:acs:names:operation",
+      "execute": "urn:restorecommerce:acs:names:action:execute",
+      "permitOverrides": "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:permit-overrides",
+      "denyOverrides": "urn:oasis:names:tc:xacml:3.0:rule-combining-algorithm:deny-overrides",
+      "create": "urn:restorecommerce:acs:names:action:create",
+      "read": "urn:restorecommerce:acs:names:action:read",
+      "modify": "urn:restorecommerce:acs:names:action:modify",
+      "delete": "urn:restorecommerce:acs:names:action:delete",
+      "organization": "urn:restorecommerce:acs:model:organization.Organization",
+      "aclIndicatoryEntity": "urn:restorecommerce:acs:names:aclIndicatoryEntity",
+      "aclInstance": "urn:restorecommerce:acs:names:aclInstance",
+      "skipACL": "urn:restorecommerce:acs:names:skipACL",
+      "maskedProperty": "urn:restorecommerce:acs:names:obligation:maskedProperty"
+    }
+  }
+}

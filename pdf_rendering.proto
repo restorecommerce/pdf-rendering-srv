@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package io.restorecommerce.pdf_rendering;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+import "io/restorecommerce/auth.proto";
+import "io/restorecommerce/status.proto";
+
+// Service
+
+service PdfRenderingService {
+  rpc Render(RenderRequest) returns (RenderingResponse);
+  rpc Info(google.protobuf.Empty) returns (InfoResponse);
+}
+
+// Requests
+
+message RenderRequest {
+  oneof type {
+    IndividualRequest individual = 1;
+    CombinedRequest combined = 2;
+  }
+  optional io.restorecommerce.auth.Subject subject = 3;
+}
+
+message IndividualRequest {
+  message IndividualRequestData {
+    RenderData data = 1;
+    optional OutputOptions output = 2;
+  }
+
+  repeated IndividualRequestData data = 1;
+}
+
+message CombinedRequest {
+  repeated RenderData data = 1;
+  optional OutputOptions output = 2;
+}
+
+message RenderData {
+  RenderSource source = 1;
+  optional RenderOptions options = 2;
+}
+
+message OutputOptions {
+  optional bool generate_pdfa = 1;
+  optional MetaData meta_data = 2;
+  optional UploadOptions upload_options = 3;
+}
+
+message RenderOptions {
+  oneof header_template {
+    string header_url = 1;
+    string header_html = 2;
+  }
+  oneof footer_template {
+    string footer_url = 3;
+    string footer_html = 4;
+  }
+  optional int64 wait_after_load_time = 5;
+  optional PuppeteerOptions puppeteer_options = 6;
+}
+
+message RenderSource {
+  oneof content {
+    string url = 1;
+    string html = 2;
+  }
+}
+
+message UploadOptions {
+  optional string bucket = 1;
+  optional string key = 2;
+  optional string content_disposition = 3;
+}
+
+message MetaData {
+  optional string title = 1;
+  optional string creator = 2;
+  optional string producer = 3;
+}
+
+// Responses
+
+message RenderingResponse {
+  oneof response {
+    IndividualResponse individual = 1;
+    ResponsePayloadWithStatus combined = 2;
+  }
+  optional io.restorecommerce.status.OperationStatus operation_status = 3;
+}
+
+message IndividualResponse {
+  repeated ResponsePayloadWithStatus RenderingResponse = 1;
+}
+
+message ResponsePayloadWithStatus {
+  optional ResponsePayload payload = 1;
+  optional io.restorecommerce.status.Status status = 3;
+}
+
+message ResponsePayload {
+  oneof response {
+    ResponsePDF pdf = 1;
+    ResponseS3Upload upload_result = 2;
+  }
+}
+
+message ResponsePDF {
+  bytes data = 1;
+}
+
+message ResponseS3Upload {
+  string url = 1;
+  int32 length = 2;
+}
+
+// Info
+
+message InfoResponse {
+  message ChromeVersion {
+    string protocol_version = 1;
+    string product = 2;
+    string revision = 3;
+    string user_agent = 4;
+    string js_version = 5;
+  }
+
+  ChromeVersion chrome = 1;
+}
+
+// Puppeteer
+
+message PuppeteerOptions {
+  optional PDFOptions pdf_options = 1;
+}
+
+message PDFOptions {
+  enum PaperFormat {
+    A0 = 0;
+    A1 = 1;
+    A2 = 2;
+    A3 = 3;
+    A4 = 4;
+    A5 = 5;
+    A6 = 6;
+    A7 = 7;
+    LETTER = 8;
+    LEGAL = 9;
+    TABLOID = 10;
+  }
+
+  optional bool landscape = 1;
+  optional bool display_header_footer = 2;
+  optional bool print_background = 3;
+  optional PaperFormat format = 4;
+  optional float scale = 5;
+  optional float paper_width = 6;
+  optional float paper_height = 7;
+  optional float margin_top = 8;
+  optional float margin_bottom = 9;
+  optional float margin_left = 10;
+  optional float margin_right = 11;
+  optional string page_ranges = 12;
+  optional bool ignore_invalid_page_ranges = 13;
+  optional string header_template = 14;
+  optional string footer_template = 15;
+  optional bool prefer_css_page_size = 16;
+}

@@ -1,0 +1,35 @@
+[package]
+name = "pdf-rendering-srv"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread", "full"] }
+prost = "0.12.3"
+headless_chrome = "1.0.9"
+tonic = "0.11.0"
+prost-types = "0.12.3"
+tokio-stream = "0.1.15"
+tiny_http = "0.12.0"
+tonic-reflection = "0.11.0"
+tonic-health = "0.11.0"
+anyhow = "1.0.75"
+log = "0.4.20"
+env_logger = "0.11.3"
+config = "0.14.0"
+aws-sdk-s3 = "1.22.0"
+aws-sdk-config = "1.20.0"
+aws-smithy-runtime-api = "1.3.0"
+lopdf = "0.32.0"
+serde_json = "1.0.116"
+serde = { version = "1.0.198", features = ["derive"] }
+prost-wkt-types = "0.5.1"
+printpdf = "0.7.0"
+
+[build-dependencies]
+tonic-build = "0.11.0"
+reqwest = { version = "0.12.0", features = ["blocking", "json"] }
+flate2 = "1.0.28"
+tar = "0.4.40"

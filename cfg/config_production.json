@@ -1,0 +1,13 @@
+{
+  "s3": {
+    "client": {
+      "endpoint": "http://cloudserver:8000"
+    }
+  },
+
+  "client": {
+    "user": {
+      "address": "http://identity-srv:50051"
+    }
+  }
+}

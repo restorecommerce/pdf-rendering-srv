@@ -1,93 +1,196 @@
 = PDF Rendering Service
 
-A Docker image for rendering PDFs from HTML part of the
-link:https://github.com/restorecommerce[Restorecommerce].
+A microservice for rendering PDFs from HTML using the Chromium browser.
 
 [#features]
 == Features
 
-* Good for receipts, invoices, or any other content.
-* It uses the link:https://github.com/alpeware/chrome-headless-trunk[chrome-headless-trunk]
-as base image for Chrome and packages the link:https://github.com/alvarcarto/url-to-pdf-api[url-to-pdf-api]
-library to form a solid and easy-to-use microservice.
-* Supports MS fonts (Arial, Courier, Times New Roman, etc.).
+* Good for any kind of content like receipts, invoices, reports.
+* gRPC interface including health checks.
+* Uses link:https://www.chromium.org/[Chromium] to render PDF.
+* Supports various fonts out of the box and adding custom fonts.
 
-The image is available on
-link:https://hub.docker.com/repository/docker/restorecommerce/pdf-rendering-srv[docker hub].
+[#example]
+== Example
 
-[#configuration]
-== Configuration
-
-[#configuration_install_extra_fonts]
-=== Installing Extra Fonts
-
-When text is rendered by a computer, sometimes characters are displayed as 口 a.k.a “tofu”.
-They are little boxes to indicate your device does not have a font to display the text.
-To solve this additional fonts can be installed with in the container:
-
-[source,sh]
-----
-docker exec -it restorecommerce_pdf_rendering_srv /bin/bash
-apt-get update
-apt-get install -yq fonts-symbola      # 🙄🙄🙄
-apt-get install -yq fonts-noto-cjk     # 囍, 언문, にほんご
-apt-get install -yq fonts-ocr-b        # PASSPORT FONT
-----
-
-
-[#usage]
-== Usage
-
-[#usage_with_url]
-=== With URL
-
-[source,sh]
-----
-curl -o google.pdf -XGET localhost:9000/api/render?url=http://google.com
-----
-
-[#usage_with_html_file]
-=== With HTML File
-
-[source,sh]
-----
-curl -o index.pdf -XPOST -d@index.html -H 'content-type: text/html' 'localhost:9000/api/render'
-----
-
-An HTML document which uses the Microsoft Fonts as in this example,
 [source,html]
 ----
 <!DOCTYPE html>
 <html>
 <body>
 
-<p style="font-family:Arial">This is another paragraph - Arial.</p>
-<p style="font-family:Courier">This is another paragraph - Courier.</p>
-<p style="font-family:Comic Sans MS">This is another paragraph - Comic Sans MS.</p>
-<p style="font-family:Times New Roman">This is another paragraph - Times New Roman.</p>
+<p style="font-family:Liberation">This is a paragraph - Liberation.</p>
+<p style="font-family:Liberation Sans">This is a paragraph - Liberation Sans.</p>
+<p style="font-family:Noto Serif">This is a paragraph - Noto Serif.</p>
+<p style="font-family:Noto Sans">This is a paragraph - Noto Sans.</p>
+<p style="font-family:Arial">This is a paragraph - Arial (without font being installed).</p>
+<p style="font-family:Comic Sans MS">This is a paragraph - Comic Sans MS (without font being installed).</p>
+<p style="font-family:Times New Roman">This is a paragraph - Times New Roman (without font being installed).</p>
 
 </body>
 </html>
 ----
-will be rendered by the `pdf-rendering-srv` as shown in the image
-link:https://github.com/restorecommerce/pdf-rendering-srv/blob/master/docs/modules/ROOT/assets/images/pdf.jpg[pdf.jpg].
 
-[#usage_with_pdf_options]
-=== With PDF Options
+renders like this in PDF:
+link:https://github.com/restorecommerce/pdf-rendering-srv/blob/master/docs/modules/ROOT/assets/images/fonts.png[fonts.png].
 
-The service supports all link:https://github.com/alvarcarto/url-to-pdf-api#get-apirender[options] provided by which can be passed as query
-parameters:
+[#usage]
+== Usage
 
-[source,sh]
-----
-curl -o index.pdf -XPOST -d@index.html -H 'content-type: text/html' 'localhost:9000/api/render?pdf.margin.top=100px&pdf.margin.bottom=100px&pdf.displayHeaderFooter=true&pdf.footerTemplate=%3Cdiv%20style=%22width:100%25%22%3E%3Cp%20style=%22padding-right:1cm;text-align:right;font-size:10px;%20%22%3Epage%20%3Cspan%20class=%22pageNumber%22%3E%3C/span%3E%20of%20%3Cspan%20class=%22totalPages%22%3E%3C/p%3E'
-----
-[#usage_with_api_key]
-=== With API Key
-
-The optional `X-API-KEY` can be used for authentication and can be set using `API_TOKENS` environment variable when running the container.
+[#usage_running_as_container]
+=== Running as Container
 
 [source,sh]
 ----
-curl -o google.pdf -H 'X-API-KEY: XXXXXX' -XGET localhost:9000/api/render?url=http://google.com
+docker run -d -p 50051:50051 -n pdf-rendering-srv ghcr.io/restorecommerce/pdf-rendering-srv
 ----
+
+[#example_calls]
+=== Example calls
+
+These examples use the link:https://github.com/fullstorydev/grpcurl[grpcurl] CLI tool to make gRPC calls.
+
+[#example_call_from_url]
+==== From URL
+
+Produces a PDF file called `out.pdf`
+
+[source,sh]
+----
+grpcurl -plaintext -d '{
+  "individual": {
+    "data": [
+      {
+        "data": {
+          "source": {
+            "url": "https://en.wikipedia.org/wiki/WebKit"
+          }
+        }
+      }
+    ]
+  }
+}' 127.0.0.1:50069 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.individual.RenderingResponse[0].payload.pdf.data' | base64 -d > out.pdf
+----
+
+[#example_call_from_html]
+==== From HTML
+
+Produces a PDF file called `out.pdf`
+
+[source,sh]
+----
+grpcurl -plaintext -d '{
+  "individual": {
+    "data": [
+      {
+        "data": {
+          "source": {
+            "html": "Hello World"
+          }
+        }
+      }
+    ]
+  }
+}' 127.0.0.1:50069 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.individual.RenderingResponse[0].payload.pdf.data' | base64 -d > out.pdf
+----
+
+[#example_call_combine]
+==== Combine Multiple PDFs
+
+Produces a PDF file called `combined.pdf`
+
+[source,sh]
+----
+grpcurl -plaintext -d '{
+  "combined": {
+    "data": [
+      {
+        "source": {
+          "url": "https://en.wikipedia.org/wiki/WebKit"
+        }
+      },
+      {
+        "source": {
+          "html": "Hello World"
+        }
+      }
+    ]
+  }
+}' 127.0.0.1:50069 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.combined.payload.pdf.data' | base64 -d > combined.pdf
+----
+
+[#example_s3]
+==== Upload directly to S3
+
+Produces a PDF file and uploads it to the `pdf` bucket at the `sample.pdf` key.
+
+[source,sh]
+----
+grpcurl -plaintext -d '{
+  "individual": {
+    "data": [
+      {
+        "data": {
+          "source": {
+            "html": "Hello World"
+          }
+        },
+        "output": {
+          "metaData": {
+            "title": "Replacement Title",
+            "creator": "Replacement Creator",
+            "producer": "Replacement Producer"
+          },
+          "uploadOptions": {
+            "bucket": "pdf",
+            "key": "sample.pdf"
+          }
+        }
+      }
+    ]
+  }
+}' 127.0.0.1:50069 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq
+----
+
+[#customization]
+== Customization
+
+[#customization_install_additional_fonts]
+=== Installing Additional Fonts
+
+See the Dockerfile how fonts are installed in Alpine Linux.
+
+[#configuration]
+== Configuration
+
+All configuration options and their defaults are available in `./cfg/config.json`.
+
+[#api]
+== API
+
+This microservice exposes the following gRPC endpoints:
+
+[#api_info]
+=== Info
+
+Return data about the used chromium instance.
+
+`io.restorecommerce.pdf_rendering.PdfRenderingService.Info`
+
+[#api_render]
+=== Render
+
+Render provided request into a PDF.
+
+`io.restorecommerce.pdf_rendering.PdfRenderingService.Render`
+
+[width="100%",cols="20%,16%,20%,44%",options="header",]
+|==========================================================================================================================
+|Field |Type |Label |Description
+|individual |`io.restorecommerce.pdf_rendering.IndividualRequest` |optional |Individual render request
+|combined |`io.restorecommerce.pdf_rendering.CombinedRequest` |optional |Combined render request
+|subject |`io.restorecommerce.auth.Subject` |optional |Subject details
+|==========================================================================================================================
+
+For details of the meaning of these options check the link:https://pptr.dev/api/puppeteer.pdfoptions[PDFOptions interface] of Puppeteer.
+

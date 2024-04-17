@@ -1,28 +1,44 @@
-FROM browserless/chrome:latest
+FROM lukemathwalker/cargo-chef:latest-rust-1.77-alpine AS planner
+WORKDIR /app
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
 
-ENV BROWSER_EXECUTABLE_PATH=$CHROME_PATH
-ENV PORT=9000
 
-USER root
+FROM rust:1.77.2-alpine as build
 
-RUN apt update -y \
-  && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
-  && apt install -y fonts-dejavu ttf-mscorefonts-installer gnupg nodejs \
-  && rm -rf /var/lib/apt/lists/*
+RUN rustup target add x86_64-unknown-linux-musl
+RUN apk add --no-cache build-base pkgconfig dbus-dev libressl-dev protoc
 
-RUN groupadd --gid 1000 node \
-  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
+WORKDIR /app
 
-USER node
+RUN cargo install cargo-chef
 
-ENV HOME=/home/node
-ARG APP_HOME=/home/node/srv
-WORKDIR $APP_HOME
+COPY --from=planner /app/recipe.json recipe.json
+RUN cargo chef cook --target x86_64-unknown-linux-musl --recipe-path recipe.json
 
-RUN git clone --depth 1 https://github.com/alvarcarto/url-to-pdf-api . \
-  && npm install --only=production
+COPY . .
+RUN cargo build --target x86_64-unknown-linux-musl
 
-HEALTHCHECK CMD curl -I http://localhost:9000/
+RUN strip /app/target/x86_64-unknown-linux-musl/debug/pdf-rendering-srv
 
-EXPOSE 9000
-CMD [ "node", "." ]
+
+FROM alpine
+
+RUN apk --update --upgrade --no-cache add fontconfig font-noto font-noto-emoji font-liberation \
+    && fc-cache -f \
+    && fc-list | sort
+
+# Don't install M$ fonts because of license issues
+# RUN apk --update add fontconfig msttcorefonts-installer \
+#     && update-ms-fonts \
+#     && fc-cache -f
+
+RUN apk add --no-cache chromium
+
+WORKDIR /app
+
+COPY --from=build /app/target/x86_64-unknown-linux-musl/debug/pdf-rendering-srv /app/pdf-rendering-srv
+
+EXPOSE 50051
+
+CMD ["/app/pdf-rendering-srv"]

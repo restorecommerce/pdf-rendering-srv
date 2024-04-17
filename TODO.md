@@ -1,0 +1,13 @@
+- ~~Authentication/ authorization (+ subject propagation)~~
+- ~~Let service directly upload to a pre defined S3 endpoint (provide bucket, key, meta data in the request)~~
+- ~~Combine PDFs~~
+- Embed attachments like XML data
+- PDF/A support
+- Proxy support for downloads
+- Content caching
+- Add docs also explaining how to add fonts
+- ~~Info endpoint that provides chrome version~~
+- ~~Modify PDF meta data~~
+- Emit Kafka event on successful render/ upload
+- ~~Batch rendering of multiple documents~~
+- ~~Add logging~~

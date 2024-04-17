@@ -4,13 +4,22 @@
 // FEATURES
 * xref:index.adoc#features[Features]
 
-// CONFIGURATION
-* xref:index.adoc#configuration[Configuration]
-** xref:index.adoc#configuration_install_extra_fonts[Installing Extra Fonts]
+// EXAMPLE
+* xref:index.adoc#example[Example]
 
 // USAGE
 * xref:index.adoc#usage[Usage]
-** xref:index.adoc#usage_with_url[With URL]
-** xref:index.adoc#usage_with_html_file[With HTML File]
-** xref:index.adoc#usage_with_pdf_options[With PDF Options]
-** xref:index.adoc#usage_with_api_key[With API Key]
+** xref:index.adoc#usage_running_as_container[Running as Container]
+** xref:index.adoc#usage_from_url[From URL]
+** xref:index.adoc#usage_from_html[From HTML]
+
+// CUSTOMIZATION
+* xref:index.adoc#customization[Customization]
+** xref:index.adoc#customization_install_additional_fonts[Installing Extra Fonts]
+
+// CONFIGURATION
+* xref:index.adoc#configuration[Configuration]
+
+// API
+* xref:index.adoc#api[API]
+** xref:index.adoc#api_render[Render]
