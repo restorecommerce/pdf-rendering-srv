@@ -1,8 +1,6 @@
 = PDF Rendering Service
 
 https://github.com/restorecommerce/pdf-rendering-srv/actions/workflows/build.yaml[image:https://img.shields.io/github/actions/workflow/status/restorecommerce/pdf-rendering-srv/build.yaml?style=flat-square[Build Status]]
-https://depfu.com/repos/github/restorecommerce/pdf-rendering-srv?branch=master[image:https://img.shields.io/depfu/dependencies/github/restorecommerce/pdf-rendering-srv?style=flat-square[Dependencies]]
-https://coveralls.io/github/restorecommerce/pdf-rendering-srv?branch=master[image:https://img.shields.io/coveralls/github/restorecommerce/pdf-rendering-srv/master.svg?style=flat-square[Coverage Status]]
 
 A microservice for PDF rendering from URLs.
 

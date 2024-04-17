@@ -7,6 +7,8 @@ A microservice for rendering PDFs from HTML using the Chromium browser.
 
 * Good for any kind of content like receipts, invoices, reports.
 * gRPC interface including health checks.
+* Batch rendering.
+* Return or upload render results to an S3 endpoint.
 * Uses link:https://www.chromium.org/[Chromium] to render PDF.
 * Supports various fonts out of the box and adding custom fonts.
 
@@ -69,7 +71,7 @@ grpcurl -plaintext -d '{
       }
     ]
   }
-}' 127.0.0.1:50069 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.individual.RenderingResponse[0].payload.pdf.data' | base64 -d > out.pdf
+}' 127.0.0.1:50051 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.individual.RenderingResponse[0].payload.pdf.data' | base64 -d > out.pdf
 ----
 
 [#example_call_from_html]
@@ -91,7 +93,7 @@ grpcurl -plaintext -d '{
       }
     ]
   }
-}' 127.0.0.1:50069 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.individual.RenderingResponse[0].payload.pdf.data' | base64 -d > out.pdf
+}' 127.0.0.1:50051 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.individual.RenderingResponse[0].payload.pdf.data' | base64 -d > out.pdf
 ----
 
 [#example_call_combine]
@@ -116,7 +118,7 @@ grpcurl -plaintext -d '{
       }
     ]
   }
-}' 127.0.0.1:50069 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.combined.payload.pdf.data' | base64 -d > combined.pdf
+}' 127.0.0.1:50051 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq -r '.combined.payload.pdf.data' | base64 -d > combined.pdf
 ----
 
 [#example_s3]
@@ -149,7 +151,7 @@ grpcurl -plaintext -d '{
       }
     ]
   }
-}' 127.0.0.1:50069 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq
+}' 127.0.0.1:50051 io.restorecommerce.pdf_rendering.PdfRenderingService.Render | jq
 ----
 
 [#customization]
