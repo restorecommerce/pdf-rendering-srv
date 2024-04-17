@@ -1,0 +1,24 @@
+{
+  "branches": [
+    "master"
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/github",
+    [
+      "@semantic-release-plus/docker",
+      {
+        "name": "docker.io/restorecommerce/pdf-rendering-srv",
+        "skipLogin": true
+      }
+    ],
+    [
+      "@semantic-release-plus/docker",
+      {
+        "name": "ghcr.io/restorecommerce/pdf-rendering-srv",
+        "skipLogin": true
+      }
+    ]
+  ]
+}

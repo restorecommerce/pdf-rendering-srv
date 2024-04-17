@@ -1,0 +1,25 @@
+name: Merge Release PR
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  pr_approved:
+    if: ${{ github.event.review.state == 'approved' && github.event.pull_request.base.ref == 'master' && github.event.pull_request.head.ref == 'next' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone git repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge PR
+        run: |
+          git checkout master
+          git merge --ff origin/next
+          git push -u origin master
+      - uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: release.yaml
+          ref: master

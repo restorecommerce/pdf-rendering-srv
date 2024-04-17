@@ -88,8 +88,10 @@ fn logging(req: Request<()>) -> Result<Request<()>, Status> {
 fn load_config() -> Config {
     let run_mode = env::var("NODE_ENV").unwrap_or_else(|_| "development".into());
 
+    info!("Running in mode: {}", run_mode);
+
     Config::builder()
-        .add_source(config::File::with_name("cfg/config"))
+        .add_source(File::with_name("cfg/config"))
         .add_source(File::with_name(&format!("cfg/config_{}", run_mode)))
         .add_source(config::Environment::with_convert_case(Case::Lower).separator("__"))
         .build()

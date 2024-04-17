@@ -7,7 +7,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 FROM rust:1.77.2-alpine as build
 
 RUN rustup target add x86_64-unknown-linux-musl
-RUN apk add --no-cache build-base pkgconfig dbus-dev libressl-dev protoc
+RUN apk add --no-cache build-base pkgconfig dbus-dev libressl-dev protoc protobuf-dev
 
 WORKDIR /app
 
@@ -38,6 +38,7 @@ RUN apk add --no-cache chromium
 WORKDIR /app
 
 COPY --from=build /app/target/x86_64-unknown-linux-musl/debug/pdf-rendering-srv /app/pdf-rendering-srv
+COPY ./cfg /app/cfg
 
 EXPOSE 50051
 

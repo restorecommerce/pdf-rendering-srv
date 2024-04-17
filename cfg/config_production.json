@@ -1,4 +1,8 @@
 {
+  "server": {
+    "port": 50051
+  },
+
   "s3": {
     "client": {
       "endpoint": "http://cloudserver:8000"
