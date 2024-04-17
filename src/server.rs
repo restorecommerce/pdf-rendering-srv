@@ -133,8 +133,11 @@ impl PDFServer {
 
                         let mut out_data = data.clone();
                         if output.is_some() {
-                            out_data = add_pdf_metadata(out_data.clone(), output.clone().unwrap().meta_data)
-                              .expect("failed adding meta");
+                            out_data = add_pdf_metadata(
+                                out_data.clone(),
+                                output.clone().unwrap().meta_data,
+                            )
+                            .expect("failed adding meta");
                         }
 
                         out.push(

@@ -1,6 +1,7 @@
 use config::{Case, Config, File};
 use env_logger::WriteStyle;
 use log::info;
+use std::str::FromStr;
 use std::{env, error::Error, net::ToSocketAddrs};
 use tokio::sync::mpsc;
 
@@ -21,8 +22,17 @@ mod types;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
+    let config = load_config();
+
+    let level = log::LevelFilter::from_str(
+        config
+            .get_string("logger.console.level")
+            .unwrap_or("info".to_string())
+            .as_str(),
+    );
+
     env_logger::builder()
-        .filter_level(log::LevelFilter::Debug)
+        .filter_level(level.expect("invalid level"))
         .write_style(WriteStyle::Always)
         .init();
 
@@ -40,8 +50,6 @@ async fn main() -> Result<(), Box<dyn Error>> {
     health_reporter
         .set_service_status("readiness", ServingStatus::Serving)
         .await;
-
-    let config = load_config();
 
     let (tx, rx) = mpsc::channel::<InternalRequest>(32);
 
@@ -88,7 +96,7 @@ fn logging(req: Request<()>) -> Result<Request<()>, Status> {
 fn load_config() -> Config {
     let run_mode = env::var("NODE_ENV").unwrap_or_else(|_| "development".into());
 
-    info!("Running in mode: {}", run_mode);
+    println!("Running in mode: {}", run_mode);
 
     Config::builder()
         .add_source(File::with_name("cfg/config"))
