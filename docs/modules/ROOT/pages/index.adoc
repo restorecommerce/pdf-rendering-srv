@@ -44,14 +44,7 @@ link:https://github.com/restorecommerce/pdf-rendering-srv/blob/master/docs/modul
 
 [source,sh]
 ----
-docker run -e NODE_ENV=production -d -p 50051:50051 -n pdf-rendering-srv ghcr.io/restorecommerce/pdf-rendering-srv
-----
-
-or
-
-[source,sh]
-----
-docker run -d -p 50051:50062 -n pdf-rendering-srv ghcr.io/restorecommerce/pdf-rendering-srv
+docker run -d -p 50051:50051 -n pdf-rendering-srv ghcr.io/restorecommerce/pdf-rendering-srv
 ----
 
 [#example_calls]

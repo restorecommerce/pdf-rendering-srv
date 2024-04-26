@@ -40,6 +40,8 @@ WORKDIR /app
 COPY --from=build /app/target/x86_64-unknown-linux-musl/debug/pdf-rendering-srv /app/pdf-rendering-srv
 COPY ./cfg /app/cfg
 
+ENV NODE_ENV=production
+
 EXPOSE 50051
 
 CMD ["/app/pdf-rendering-srv"]
