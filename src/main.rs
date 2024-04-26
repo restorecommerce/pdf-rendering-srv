@@ -5,6 +5,7 @@ use std::str::FromStr;
 use std::{env, error::Error, net::ToSocketAddrs};
 use tokio::sync::mpsc;
 
+use tonic::codegen::InterceptedService;
 use tonic::{transport::Server, Request, Status};
 use tonic_health::ServingStatus;
 
@@ -60,13 +61,22 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     start_renderer(rx).await?;
 
+    let pdf_service =
+        InterceptedService::new(
+            PdfRenderingServiceServer::new(pdf_server)
+                .max_decoding_message_size(
+                    config.get_int("server.message_size_limit").unwrap() as usize
+                )
+                .max_encoding_message_size(
+                    config.get_int("server.message_size_limit").unwrap() as usize
+                ),
+            logging,
+        );
+
     let server = Server::builder()
-        .max_frame_size(config.get_int("server.message_size_limit").map(|t| { t as u32 }).ok())
         .add_service(health_service)
         .add_service(reflection_service)
-        .add_service(PdfRenderingServiceServer::with_interceptor(
-            pdf_server, logging,
-        ))
+        .add_service(pdf_service)
         .serve(
             (format!(
                 "{}:{}",
