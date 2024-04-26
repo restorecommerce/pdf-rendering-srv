@@ -61,6 +61,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     start_renderer(rx).await?;
 
     let server = Server::builder()
+        .max_frame_size(config.get_int("server.message_size_limit").map(|t| { t as u32 }).ok())
         .add_service(health_service)
         .add_service(reflection_service)
         .add_service(PdfRenderingServiceServer::with_interceptor(
