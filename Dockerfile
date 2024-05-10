@@ -14,12 +14,12 @@ WORKDIR /app
 RUN cargo install cargo-chef
 
 COPY --from=planner /app/recipe.json recipe.json
-RUN cargo chef cook --target x86_64-unknown-linux-musl --recipe-path recipe.json
+RUN cargo chef cook --release --target x86_64-unknown-linux-musl --recipe-path recipe.json
 
 COPY . .
-RUN cargo build --target x86_64-unknown-linux-musl
+RUN cargo build --target x86_64-unknown-linux-musl --release
 
-RUN strip /app/target/x86_64-unknown-linux-musl/debug/pdf-rendering-srv
+RUN strip /app/target/x86_64-unknown-linux-musl/release/pdf-rendering-srv
 
 
 FROM alpine
@@ -37,7 +37,7 @@ RUN apk add --no-cache chromium
 
 WORKDIR /app
 
-COPY --from=build /app/target/x86_64-unknown-linux-musl/debug/pdf-rendering-srv /app/pdf-rendering-srv
+COPY --from=build /app/target/x86_64-unknown-linux-musl/release/pdf-rendering-srv /app/pdf-rendering-srv
 COPY ./cfg /app/cfg
 
 ENV NODE_ENV=production
