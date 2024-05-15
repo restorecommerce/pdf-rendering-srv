@@ -12,7 +12,7 @@ use tonic_health::ServingStatus;
 use crate::proto::pdf_rendering::pdf_rendering_service_server::PdfRenderingServiceServer;
 use crate::renderer::start_renderer;
 use crate::server::PDFServer;
-use crate::types::InternalRequest;
+use crate::types::{IDExtension, InternalRequest};
 
 mod pdf_utils;
 mod proto;
@@ -36,6 +36,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .filter_level(level.expect("invalid level"))
         .write_style(WriteStyle::Always)
         .init();
+
+    let metrics = tokio::runtime::Handle::current().metrics();
+    info!("worker count: {}", metrics.num_workers());
 
     let reflection_service = tonic_reflection::server::Builder::configure()
         .register_encoded_file_descriptor_set(proto::pdf_rendering::FILE_DESCRIPTOR_SET)
@@ -99,8 +102,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn logging(req: Request<()>) -> Result<Request<()>, Status> {
-    info!("Received request: {:?}", req);
+fn logging(mut req: Request<()>) -> Result<Request<()>, Status> {
+    let id = ulid::Ulid::new();
+
+    req.extensions_mut().insert(IDExtension { id });
+
+    info!("[{}] Received request: {:?}", id, req);
     Ok(req)
 }
 

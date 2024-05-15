@@ -8,3 +8,12 @@ pub struct InternalRequest {
 }
 
 pub type InternalResponse = anyhow::Result<Vec<u8>, Box<dyn Error + Send + Sync>>;
+
+pub struct RendererResponse {
+    pub resp: InternalResponse,
+    pub order: usize,
+}
+
+pub struct IDExtension {
+    pub id: ulid::Ulid,
+}

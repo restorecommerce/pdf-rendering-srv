@@ -5,3 +5,4 @@
 !build.rs
 !pdf_rendering.proto
 !cfg
+!.cargo

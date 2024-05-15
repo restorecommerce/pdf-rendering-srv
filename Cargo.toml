@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread", "full"] }
+tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread", "rt", "full"] }
 prost = "0.12.3"
 headless_chrome = "1.0.9"
 tonic = "0.11.0"
@@ -26,6 +26,7 @@ lopdf = "0.32.0"
 serde_json = "1.0.116"
 serde = { version = "1.0.198", features = ["derive"] }
 prost-wkt-types = "0.5.1"
+ulid = "1.1.2"
 
 [build-dependencies]
 tonic-build = "0.11.0"

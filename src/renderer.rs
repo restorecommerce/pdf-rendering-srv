@@ -1,15 +1,16 @@
 use crate::proto::pdf_rendering::pdf_options::PaperFormat;
 use crate::proto::pdf_rendering::render_source::Content;
-use crate::proto::pdf_rendering::RenderOptions;
-use crate::types::InternalRequest;
+use crate::proto::pdf_rendering::{RenderData, RenderOptions};
+use crate::types::{InternalRequest, RendererResponse};
 use anyhow::{anyhow, Result};
 use headless_chrome::browser::default_executable;
 use headless_chrome::types::PrintToPdfOptions;
-use headless_chrome::{Browser, LaunchOptionsBuilder};
+use headless_chrome::{Browser, LaunchOptionsBuilder, Tab};
 use std::error::Error;
 use std::io;
 use std::sync::Arc;
 use std::time::Duration;
+use tokio::sync::mpsc;
 use tokio::sync::mpsc::Receiver;
 
 impl PaperFormat {
@@ -47,7 +48,7 @@ impl PaperFormat {
 }
 
 pub fn content_to_pdf(
-    browser: Browser,
+    tab: Arc<Tab>,
     content: Content,
     options: Option<RenderOptions>,
 ) -> Result<Vec<u8>, Box<dyn Error + Send + Sync>> {
@@ -126,8 +127,6 @@ pub fn content_to_pdf(
         ..Default::default()
     };
 
-    let tab = browser.new_tab().expect("failed opening new browser tab");
-
     let pdf = match content {
         Content::Url(url) => tab
             .navigate_to(url.as_str())?
@@ -186,21 +185,56 @@ pub async fn start_renderer(mut rx: Receiver<InternalRequest>) -> Result<(), Box
         .unwrap();
 
     tokio::spawn(async move {
-        let browser = Browser::new(options).expect("failed instantiating browser");
+        let browser = Arc::new(Browser::new(options).expect("failed instantiating browser"));
+
         while let Some(cmd) = rx.recv().await {
-            for req in cmd.data {
-                let content = req
-                    .clone()
-                    .source
-                    .expect("no source")
-                    .content
-                    .expect("no content");
-                let options = req.clone().options;
-                let out = content_to_pdf(browser.clone(), content, options.clone());
-                let _ = cmd.response.send(out).await;
-            }
+            handle_cmd(browser.clone(), cmd);
         }
     });
 
     Ok(())
+}
+
+pub fn handle_cmd(browser: Arc<Browser>, cmd: InternalRequest) {
+    tokio::spawn(async move {
+        let (tx, mut rx) = mpsc::channel::<RendererResponse>(32);
+
+        let data = cmd.data;
+        for (i, req) in data.iter().enumerate() {
+            let tab = browser.new_tab().expect("failed opening new browser tab");
+            handle_req(tab, req, tx.clone(), i);
+        }
+
+        let mut rendered = Vec::with_capacity(data.clone().len());
+
+        for _ in data.clone().iter() {
+            rendered.push(rx.recv().await.unwrap());
+        }
+
+        rendered.sort_by_key(|r| r.order);
+
+        for out in rendered {
+            let _ = cmd.response.send(out.resp).await;
+        }
+    });
+}
+
+pub fn handle_req(
+    tab: Arc<Tab>,
+    req: &RenderData,
+    tx: mpsc::Sender<RendererResponse>,
+    order: usize,
+) {
+    let req2 = req.clone();
+    tokio::spawn(async move {
+        let content = req2
+            .clone()
+            .source
+            .expect("no source")
+            .content
+            .expect("no content");
+        let options = req2.clone().options;
+        let out = content_to_pdf(tab, content, options.clone());
+        let _ = tx.clone().send(RendererResponse { resp: out, order }).await;
+    });
 }

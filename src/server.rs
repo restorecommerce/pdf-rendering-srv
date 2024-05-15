@@ -11,9 +11,9 @@ use crate::proto::pdf_rendering::{
 use crate::proto::status;
 use crate::proto::status::OperationStatus;
 use crate::s3::upload_to_s3;
-use crate::types::{InternalRequest, InternalResponse};
+use crate::types::{IDExtension, InternalRequest, InternalResponse};
 use config::Config;
-use log::{error, info};
+use log::{debug, error, info};
 use lopdf::Document;
 use prost_wkt_types::Empty;
 use tokio::sync::mpsc;
@@ -31,6 +31,10 @@ impl PdfRenderingService for PDFServer {
         request: Request<RenderRequest>,
     ) -> Result<Response<RenderingResponse>, Status> {
         let (tx, mut rx) = mpsc::channel::<InternalResponse>(32);
+
+        let id = request.extensions().get::<IDExtension>().unwrap();
+
+        debug!("[{}] Rendering request: {:?}", id.id, request.get_ref());
 
         let data = match request.get_ref().clone().r#type.unwrap() {
             Type::Individual(req) => req.data.iter().map(|x| x.clone().data.unwrap()).collect(),
@@ -57,7 +61,7 @@ impl PdfRenderingService for PDFServer {
             rendered.push(rx.recv().await);
         }
 
-        info!("Rendering success: {:?}", request.get_ref());
+        info!("[{}] Rendering success", id.id);
 
         let output = match request.get_ref().clone().r#type.unwrap() {
             Type::Individual(req) => Ok(Self::individual_response(

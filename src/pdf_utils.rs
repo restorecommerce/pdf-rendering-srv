@@ -168,10 +168,8 @@ pub fn merge_pdfs(documents: Vec<Document>) -> std::io::Result<Vec<u8>> {
 
     //Set all bookmarks to the PDF Object tree then set the Outlines to the Bookmark content map.
     if let Some(n) = document.build_outline() {
-        if let Ok(x) = document.get_object_mut(catalog_object.0) {
-            if let Dictionary(ref mut dict) = x {
-                dict.set("Outlines", Reference(n));
-            }
+        if let Ok(Dictionary(ref mut dict)) = document.get_object_mut(catalog_object.0) {
+            dict.set("Outlines", Reference(n));
         }
     }
 

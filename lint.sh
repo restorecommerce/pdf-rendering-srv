@@ -2,5 +2,5 @@
 
 set -ex
 
-cargo fmt
-cargo clippy
+cargo +nightly fmt
+cargo +nightly clippy
