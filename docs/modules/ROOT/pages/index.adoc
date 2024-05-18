@@ -34,7 +34,7 @@ A microservice for rendering PDFs from HTML using the Chromium browser.
 ----
 
 renders like this in PDF:
-link:https://github.com/restorecommerce/pdf-rendering-srv/blob/master/docs/modules/ROOT/assets/images/fonts.png[fonts.png].
+image:https://github.com/restorecommerce/pdf-rendering-srv/blob/master/docs/modules/ROOT/assets/images/fonts.png[fonts.png].
 
 [#usage]
 == Usage
