@@ -14,6 +14,7 @@ pub struct RendererResponse {
     pub order: usize,
 }
 
+#[derive(Copy, Clone)]
 pub struct IDExtension {
     pub id: ulid::Ulid,
 }

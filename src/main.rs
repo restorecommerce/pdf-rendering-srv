@@ -42,7 +42,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     let reflection_service = tonic_reflection::server::Builder::configure()
         .register_encoded_file_descriptor_set(proto::pdf_rendering::FILE_DESCRIPTOR_SET)
-        .build()
+        .build_v1()
         .unwrap();
 
     let (mut health_reporter, health_service) = tonic_health::server::health_reporter();

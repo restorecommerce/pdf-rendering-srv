@@ -5,7 +5,7 @@
 - PDF/A support
 - Proxy support for downloads
 - Content caching
-- Add docs also explaining how to add fonts
+- ~~Add docs also explaining how to add fonts~~
 - ~~Info endpoint that provides chrome version~~
 - ~~Modify PDF meta data~~
 - Emit Kafka event on successful render/ upload
