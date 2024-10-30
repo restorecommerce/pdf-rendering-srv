@@ -89,7 +89,7 @@ pub async fn upload_to_s3(
 }
 
 #[derive(Debug, Default, Serialize)]
-struct Resource {
+pub struct Resource {
     id: String,
     key: String,
     bucket: String,

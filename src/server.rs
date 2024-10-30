@@ -127,7 +127,7 @@ impl PDFServer {
                             status: Some(status::Status {
                                 id: None,
                                 code: Some(400),
-                                message: Some(format!("render failed: {}", err)),
+                                message: Some(format!("rendering failed: {}", err)),
                             }),
                             payload: None,
                         });
@@ -160,7 +160,7 @@ impl PDFServer {
 
         Response::new(RenderingResponse {
             operation_status: Some(OperationStatus {
-                code: Some(0),
+                code: Some(200),
                 message: Some("success".to_string()),
             }),
             response: Some(rendering_response::Response::Individual(
@@ -188,7 +188,7 @@ impl PDFServer {
                         Err(err) => {
                             panic!("missing pdf: {}", err)
                         }
-                        Ok(response) => Document::load_mem(response).expect("failed parsing pdf"),
+                        Ok(response) => Document::load_mem(response).expect("failed parsing PDF"),
                     },
                 })
                 .collect(),
@@ -202,7 +202,7 @@ impl PDFServer {
 
         Response::new(RenderingResponse {
             operation_status: Some(OperationStatus {
-                code: Some(0),
+                code: Some(200),
                 message: Some("success".to_string()),
             }),
             response: Some(rendering_response::Response::Combined(
@@ -235,7 +235,7 @@ impl PDFServer {
                 Ok(_) => ResponsePayloadWithStatus {
                     status: Some(status::Status {
                         id: None,
-                        code: Some(0),
+                        code: Some(200),
                         message: Some("success".to_string()),
                     }),
                     payload: Some(ResponsePayload {
@@ -260,7 +260,7 @@ impl PDFServer {
             ResponsePayloadWithStatus {
                 status: Some(status::Status {
                     id: None,
-                    code: Some(0),
+                    code: Some(200),
                     message: Some("success".to_string()),
                 }),
                 payload: Some(ResponsePayload {
