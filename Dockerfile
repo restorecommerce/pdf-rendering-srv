@@ -1,10 +1,10 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1.77-alpine AS planner
+FROM lukemathwalker/cargo-chef:latest-rust-1.82-alpine AS planner
 WORKDIR /app
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
 
-FROM rust:1.77.2-alpine as build
+FROM rust:1.82-alpine as build
 
 RUN rustup target add x86_64-unknown-linux-musl
 RUN apk add --no-cache build-base pkgconfig dbus-dev libressl-dev protoc protobuf-dev

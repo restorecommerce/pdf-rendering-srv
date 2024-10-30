@@ -216,7 +216,7 @@ pub fn add_pdf_metadata(file: Vec<u8>, meta: Option<MetaData>) -> std::io::Resul
 
             document
                 .save_to(&mut memory_cursor)
-                .expect("failed saving pdf");
+                .expect("failed saving PDF");
 
             memory_cursor.flush().expect("failed flushing");
 

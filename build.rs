@@ -38,7 +38,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .extern_path(".google.protobuf", "::prost_wkt_types")
         .type_attribute(".", "#[derive(serde::Serialize, serde::Deserialize)]")
         .file_descriptor_set_path(Path::new(&out_dir).join("proto_fd.bin"))
-        .compile(
+        .compile_protos(
             &[Path::new(&proto_path).join("pdf_rendering.proto").clone()],
             &[Path::new(&relative_path).join("package/")],
         )?;
@@ -80,7 +80,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )
         .extern_path(".google.protobuf", "::prost_wkt_types")
         .type_attribute(".", "#[derive(serde::Serialize, serde::Deserialize)]")
-        .compile(&paths, &[Path::new(&relative_path).join("package/")])?;
+        .compile_protos(&paths, &[Path::new(&relative_path).join("package/")])?;
 
     Ok(())
 }

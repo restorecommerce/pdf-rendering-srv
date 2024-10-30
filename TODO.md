@@ -5,9 +5,11 @@
 - PDF/A support
 - Proxy support for downloads
 - Content caching
-- Add docs also explaining how to add fonts
+- ~~Add docs also explaining how to add fonts~~
 - ~~Info endpoint that provides chrome version~~
 - ~~Modify PDF meta data~~
 - Emit Kafka event on successful render/ upload
 - ~~Batch rendering of multiple documents~~
 - ~~Add logging~~
+- Store objects via Ostorage service instead of S3 directly
+- return the actual URL instead of n/a when the object is stored
