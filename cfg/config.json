@@ -8,7 +8,7 @@
   "server": {
     "host": "0.0.0.0",
     "port": 50062,
-    "message_size_limit": 64000000
+    "message_size_limit": 128000000
   },
 
   "s3": {
