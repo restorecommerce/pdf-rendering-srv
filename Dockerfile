@@ -7,7 +7,7 @@ RUN cargo chef prepare --recipe-path recipe.json
 FROM rust:1.85.1-alpine3.21 AS build
 
 RUN rustup target add x86_64-unknown-linux-musl
-RUN apk add --no-cache build-base pkgconfig dbus-dev "libressl-dev<4.0.0" protoc protobuf-dev
+RUN apk add --no-cache build-base pkgconfig dbus-dev "libressl-dev<4.1.0" protoc protobuf-dev
 
 WORKDIR /app
 
