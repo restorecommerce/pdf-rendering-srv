@@ -220,7 +220,7 @@ pub fn add_pdf_metadata(file: Vec<u8>, meta: Option<MetaData>) -> std::io::Resul
 
             memory_cursor.flush().expect("failed flushing");
 
-            return Ok(memory_cursor.get_ref().to_vec());
+            Ok(memory_cursor.get_ref().to_vec())
         }
     }
 }

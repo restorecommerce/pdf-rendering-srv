@@ -100,8 +100,8 @@ fn create_metadata(config: Config, subject: Option<Subject>) -> meta::Meta {
     let mut out = meta::Meta::default();
 
     let now: prost_wkt_types::Timestamp = SystemTime::now().into();
-    out.created = Some(now.clone());
-    out.modified = Some(now.clone());
+    out.created = Some(now);
+    out.modified = Some(now);
 
     out.created_by = subject.clone().and_then(|s| s.id);
     out.modified_by = subject.clone().and_then(|s| s.id);

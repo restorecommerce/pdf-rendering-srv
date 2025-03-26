@@ -6,30 +6,30 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = { version = "1.43.0", features = ["macros", "rt-multi-thread", "rt", "full"] }
-prost = "0.13.4"
-headless_chrome = "1.0.15"
-tonic = "0.12.3"
-prost-types = "0.13.4"
+tokio = { version = "1.44.1", features = ["macros", "rt-multi-thread", "rt", "full"] }
+prost = "0.13.5"
+headless_chrome = "1.0.17"
+tonic = "0.13.0"
+prost-types = "0.13.5"
 tokio-stream = "0.1.17"
 tiny_http = "0.12.0"
-tonic-reflection = "0.12.3"
-tonic-health = "0.12.3"
-anyhow = "1.0.95"
-log = "0.4.25"
-env_logger = "0.11.6"
-config = "0.15.6"
-aws-sdk-s3 = "1.71.0"
-aws-sdk-config = "1.59.0"
-aws-smithy-runtime-api = "1.7.3"
-lopdf = "0.35.0"
-serde_json = "1.0.137"
-serde = { version = "1.0.217", features = ["derive"] }
+tonic-reflection = "0.13.0"
+tonic-health = "0.13.0"
+anyhow = "1.0.97"
+log = "0.4.27"
+env_logger = "0.11.7"
+config = "0.15.11"
+aws-sdk-s3 = "1.79.0"
+aws-sdk-config = "1.65.0"
+aws-smithy-runtime-api = "1.7.4"
+lopdf = "0.36.0"
+serde_json = "1.0.140"
+serde = { version = "1.0.219", features = ["derive"] }
 prost-wkt-types = "0.6.0"
-ulid = "1.1.4"
+ulid = "1.2.1"
 
 [build-dependencies]
-tonic-build = "0.12.3"
-reqwest = { version = "0.12.12", features = ["blocking", "json"] }
-flate2 = "1.0.35"
-tar = "0.4.43"
+tonic-build = "0.13.0"
+reqwest = { version = "0.12.15", features = ["blocking", "json"] }
+flate2 = "1.1.0"
+tar = "0.4.44"

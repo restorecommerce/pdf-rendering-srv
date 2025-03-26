@@ -45,7 +45,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         .build_v1()
         .unwrap();
 
-    let (mut health_reporter, health_service) = tonic_health::server::health_reporter();
+    let (health_reporter, health_service) = tonic_health::server::health_reporter();
 
     health_reporter
         .set_serving::<PdfRenderingServiceServer<PDFServer>>()
