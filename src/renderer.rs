@@ -10,6 +10,7 @@ use std::error::Error;
 use std::io;
 use std::sync::Arc;
 use std::time::Duration;
+use std::thread::sleep;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::Receiver;
 
@@ -68,6 +69,7 @@ pub fn content_to_pdf(
     let mut header_template = None;
     let mut footer_template = None;
     let mut prefer_css_page_size = Some(true);
+    let mut wait_after_load_time = 1;
 
     match options {
         None => {}
@@ -128,10 +130,12 @@ pub fn content_to_pdf(
     };
 
     let pdf = match content {
-        Content::Url(url) => tab
-            .navigate_to(url.as_str())?
-            .wait_until_navigated()?
-            .print_to_pdf(Some(pdf_options))?,
+        Content::Url(url) => {
+            tab.navigate_to(url.as_str())?
+            .wait_until_navigated();
+            sleep(Duration::from_secs(wait_after_load_time));
+            tab.print_to_pdf(Some(pdf_options))?
+        },
         Content::Html(data) => {
             let server = Arc::new(tiny_http::Server::http("127.0.0.1:0").unwrap());
 
@@ -166,13 +170,13 @@ pub fn content_to_pdf(
                 )
                 .as_str(),
             )?
-            .wait_until_navigated()?
-            .print_to_pdf(Some(pdf_options))?
+            .wait_until_navigated();
+            sleep(Duration::from_secs(wait_after_load_time));
+            tab.print_to_pdf(Some(pdf_options))?
         }
     };
 
     tab.close(true)?;
-
     Ok(pdf)
 }
 
