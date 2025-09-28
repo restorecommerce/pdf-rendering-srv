@@ -224,28 +224,35 @@ impl PDFServer {
         subject: Option<Subject>,
     ) -> ResponsePayloadWithStatus {
         if output.clone().is_some() && output.clone().unwrap().upload_options.is_some() {
+            let output_clone = output.clone().unwrap();
+            let upload_options = output_clone.upload_options.clone().unwrap();
+            let bucket = upload_options.bucket.clone().unwrap();
+            let key = upload_options.key.clone().unwrap();
+
             match upload_to_s3(
                 config.clone(),
-                output.unwrap().upload_options.unwrap(),
+                upload_options,
                 data.clone(),
                 subject,
             )
             .await
             {
-                Ok(_) => ResponsePayloadWithStatus {
-                    status: Some(status::Status {
-                        id: None,
-                        code: Some(200),
-                        message: Some("success".to_string()),
-                    }),
-                    payload: Some(ResponsePayload {
-                        response: Some(response_payload::Response::UploadResult(
-                            ResponseS3Upload {
-                                length: data.len() as i32,
-                                url: "n/a".to_string(),
-                            },
-                        )),
-                    }),
+                Ok(_) => {
+                    ResponsePayloadWithStatus {
+                        status: Some(status::Status {
+                            id: None,
+                            code: Some(200),
+                            message: Some("success".to_string()),
+                        }),
+                        payload: Some(ResponsePayload {
+                            response: Some(response_payload::Response::UploadResult(
+                                ResponseS3Upload {
+                                    length: data.len() as i32,
+                                    url: format!("/bucket-{}/key-{}", bucket, key),
+                                },
+                            )),
+                        }),
+                    }
                 },
                 Err(err) => ResponsePayloadWithStatus {
                     status: Some(status::Status {

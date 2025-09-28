@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use tar::Archive;
 
 // npm view @restorecommerce/protos dist.tarball
-const PROTO_URL: &str = "https://registry.npmjs.org/@restorecommerce/protos/-/protos-6.8.0.tgz";
+const PROTO_URL: &str = "https://registry.npmjs.org/@restorecommerce/protos/-/protos-6.11.9.tgz";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let out_dir = env::var_os("OUT_DIR").unwrap();
@@ -23,7 +23,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Path::new(&proto_path).join("pdf_rendering.proto").clone(),
     )?;
 
-    tonic_build::configure()
+    tonic_prost_build::configure()
         .build_server(true)
         .build_client(false)
         .compile_well_known_types(true)
@@ -66,7 +66,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|p| p.unwrap().path())
         .collect();
 
-    tonic_build::configure()
+    tonic_prost_build::configure()
         .build_server(false)
         .build_client(true)
         .compile_well_known_types(true)

@@ -10,7 +10,6 @@ use aws_sdk_s3::operation::put_object::{PutObjectError, PutObjectOutput};
 use aws_sdk_s3::primitives::ByteStream;
 use aws_smithy_runtime_api::client::orchestrator::HttpResponse;
 use config::Config;
-use serde::Serialize;
 use serde_json::json;
 use std::time::SystemTime;
 
@@ -86,14 +85,6 @@ pub async fn upload_to_s3(
         .metadata("Subject", subject_value)
         .send()
         .await
-}
-
-#[derive(Debug, Default, Serialize)]
-pub struct Resource {
-    id: String,
-    key: String,
-    bucket: String,
-    meta: meta::Meta,
 }
 
 fn create_metadata(config: Config, subject: Option<Subject>) -> meta::Meta {

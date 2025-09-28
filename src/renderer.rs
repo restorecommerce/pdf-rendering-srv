@@ -69,7 +69,7 @@ pub fn content_to_pdf(
     let mut header_template = None;
     let mut footer_template = None;
     let mut prefer_css_page_size = Some(true);
-    let mut wait_after_load_time = 1;
+    let wait_after_load_time = 1;
 
     match options {
         None => {}
@@ -132,7 +132,7 @@ pub fn content_to_pdf(
     let pdf = match content {
         Content::Url(url) => {
             tab.navigate_to(url.as_str())?
-            .wait_until_navigated();
+            .wait_until_navigated().ok();
             sleep(Duration::from_secs(wait_after_load_time));
             tab.print_to_pdf(Some(pdf_options))?
         },
@@ -170,7 +170,7 @@ pub fn content_to_pdf(
                 )
                 .as_str(),
             )?
-            .wait_until_navigated();
+            .wait_until_navigated().ok();
             sleep(Duration::from_secs(wait_after_load_time));
             tab.print_to_pdf(Some(pdf_options))?
         }

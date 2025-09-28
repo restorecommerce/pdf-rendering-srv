@@ -1,13 +1,13 @@
-FROM lukemathwalker/cargo-chef:0.1.71-rust-1.85.1-alpine3.21 AS planner
+FROM lukemathwalker/cargo-chef:latest-rust-1.84-alpine3.20 AS planner
 WORKDIR /app
 COPY . .
 RUN cargo chef prepare --recipe-path recipe.json
 
 
-FROM rust:1.85.1-alpine3.21 AS build
+FROM rust:1.90.0-alpine3.22 AS build
 
 RUN rustup target add x86_64-unknown-linux-musl
-RUN apk add --no-cache build-base pkgconfig dbus-dev "libressl-dev<4.1.0" protoc protobuf-dev
+RUN apk add --no-cache build-base pkgconfig dbus-dev libressl-dev protoc protobuf-dev
 
 WORKDIR /app
 
@@ -22,7 +22,7 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 RUN strip /app/target/x86_64-unknown-linux-musl/release/pdf-rendering-srv
 
 
-FROM alpine:3.21
+FROM alpine:3.22
 
 RUN apk --update --upgrade --no-cache add fontconfig font-noto font-noto-emoji font-liberation \
     && fc-cache -f \
