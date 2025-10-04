@@ -11,7 +11,6 @@ use std::error::Error;
 use std::io;
 use std::sync::{Arc, Condvar, Mutex};
 use std::time::Duration;
-use std::thread::sleep;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::Receiver;
 
