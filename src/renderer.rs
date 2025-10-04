@@ -4,13 +4,13 @@ use crate::proto::pdf_rendering::{RenderData, RenderOptions};
 use crate::types::{InternalRequest, RendererResponse};
 use anyhow::{anyhow, Result};
 use headless_chrome::browser::default_executable;
+use headless_chrome::protocol::cdp::types::Event;
 use headless_chrome::types::PrintToPdfOptions;
 use headless_chrome::{Browser, LaunchOptionsBuilder, Tab};
 use std::error::Error;
 use std::io;
-use std::sync::Arc;
+use std::sync::{Arc, Condvar, Mutex};
 use std::time::Duration;
-use std::thread::sleep;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::Receiver;
 
@@ -131,9 +131,35 @@ pub fn content_to_pdf(
 
     let pdf = match content {
         Content::Url(url) => {
+            // Synchronization primitives
+            let pair = Arc::new((Mutex::new(false), Condvar::new()));
+            let pair_clone = pair.clone();
+
+            let sync_event = Arc::new(move |event: &Event| match event {
+                Event::PageLifecycleEvent(lifecycle) => {
+                    if lifecycle.params.name == "DOMContentLoaded" {
+                        let (lock, cvar) = &*pair_clone;
+                        let mut fired = lock.lock().unwrap();
+                        *fired = true;
+                        cvar.notify_one();
+                    }
+                }
+                _ => {}
+            });
+
+            tab.add_event_listener(sync_event).unwrap();
+
             tab.navigate_to(url.as_str())?
             .wait_until_navigated().ok();
-            sleep(Duration::from_secs(wait_after_load_time));
+
+             // Wait for DOMContentLoaded event
+            let (lock, cvar) = &*pair;
+            let mut fired = lock.lock().unwrap();
+            while !*fired {
+                fired = cvar.wait(fired).unwrap();
+            }
+
+            // Now safe to print to PDF
             tab.print_to_pdf(Some(pdf_options))?
         },
         Content::Html(data) => {
@@ -163,6 +189,24 @@ pub fn content_to_pdf(
                 drop(srv)
             });
 
+            // Synchronization primitives
+            let pair = Arc::new((Mutex::new(false), Condvar::new()));
+            let pair_clone = pair.clone();
+
+            let sync_event = Arc::new(move |event: &Event| match event {
+                Event::PageLifecycleEvent(lifecycle) => {
+                    if lifecycle.params.name == "DOMContentLoaded" {
+                        let (lock, cvar) = &*pair_clone;
+                        let mut fired = lock.lock().unwrap();
+                        *fired = true;
+                        cvar.notify_one();
+                    }
+                }
+                _ => {}
+            });
+
+            tab.add_event_listener(sync_event).unwrap();
+
             tab.navigate_to(
                 format!(
                     "http://127.0.0.1:{}",
@@ -171,7 +215,15 @@ pub fn content_to_pdf(
                 .as_str(),
             )?
             .wait_until_navigated().ok();
-            sleep(Duration::from_secs(wait_after_load_time));
+
+             // Wait for DOMContentLoaded event
+            let (lock, cvar) = &*pair;
+            let mut fired = lock.lock().unwrap();
+            while !*fired {
+                fired = cvar.wait(fired).unwrap();
+            }
+
+            // Now safe to print to PDF
             tab.print_to_pdf(Some(pdf_options))?
         }
     };
