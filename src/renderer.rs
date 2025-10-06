@@ -137,7 +137,7 @@ pub fn content_to_pdf(
 
             let sync_event = Arc::new(move |event: &Event| match event {
                 Event::PageLifecycleEvent(lifecycle) => {
-                    if lifecycle.params.name == "DOMContentLoaded" {
+                    if lifecycle.params.name == "networkidle0" {
                         let (lock, cvar) = &*pair_clone;
                         let mut fired = lock.lock().unwrap();
                         *fired = true;
@@ -152,7 +152,7 @@ pub fn content_to_pdf(
             tab.navigate_to(url.as_str())?
             .wait_until_navigated().ok();
 
-             // Wait for DOMContentLoaded event
+             // Wait for networkidle0 event
             let (lock, cvar) = &*pair;
             let mut fired = lock.lock().unwrap();
             while !*fired {
