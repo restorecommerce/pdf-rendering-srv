@@ -12,6 +12,11 @@ A microservice for rendering PDFs from HTML using the Chromium browser.
 * Uses link:https://www.chromium.org/[Chromium] to render PDF.
 * Supports various fonts out of the box and adding custom fonts.
 
+[#rendering]
+== Rendering
+
+The rendering of the HTML page is considered complete when the `networkidle0` event is fired, i.e. when there are no more than 0 network connections for at least 500 ms. If this does still yield in an incomplete document, there is a parameter `wait_after_load_time` which can be used to add an additional wait time after the `networkidle0` event.
+
 [#example]
 == Example
 

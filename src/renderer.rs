@@ -11,6 +11,7 @@ use std::error::Error;
 use std::io;
 use std::sync::{Arc, Condvar, Mutex};
 use std::time::Duration;
+use std::thread::sleep;
 use tokio::sync::mpsc;
 use tokio::sync::mpsc::Receiver;
 
@@ -152,12 +153,15 @@ pub fn content_to_pdf(
             tab.navigate_to(url.as_str())?
             .wait_until_navigated().ok();
 
-             // Wait for networkidle0 event
+            // Wait for networkidle0 event
             let (lock, cvar) = &*pair;
             let mut fired = lock.lock().unwrap();
             while !*fired {
                 fired = cvar.wait(fired).unwrap();
             }
+
+            // Additional wait after event
+            sleep(Duration::from_secs(wait_after_load_time));
 
             // Now safe to print to PDF
             tab.print_to_pdf(Some(pdf_options))?
