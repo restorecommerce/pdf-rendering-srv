@@ -70,41 +70,44 @@ pub fn content_to_pdf(
     let mut header_template = None;
     let mut footer_template = None;
     let mut prefer_css_page_size = Some(true);
-    let wait_after_load_time = 1;
+    let mut wait_after_load_time = Some(0);
 
     match options {
         None => {}
-        Some(opt) => match opt.puppeteer_options {
-            None => {}
-            Some(puppeteer) => match puppeteer.pdf_options {
+        Some(opt) => {
+            wait_after_load_time = opt.wait_after_load_time.or(wait_after_load_time);
+            match opt.puppeteer_options {
                 None => {}
-                Some(pdf) => {
-                    paper_width = pdf.paper_width.or(paper_width);
-                    paper_height = pdf.paper_height.or(paper_height);
+                Some(puppeteer) => match puppeteer.pdf_options {
+                    None => {}
+                    Some(pdf) => {
+                        paper_width = pdf.paper_width.or(paper_width);
+                        paper_height = pdf.paper_height.or(paper_height);
 
-                    landscape = pdf.landscape.or(landscape);
-                    display_header_footer = pdf.display_header_footer.or(display_header_footer);
-                    print_background = pdf.print_background.or(print_background);
-                    format = pdf
-                        .format
-                        .map(|t| PaperFormat::try_from(t).unwrap())
-                        .or(format);
-                    scale = pdf.scale.or(scale);
-                    paper_width = pdf.paper_width.or(paper_width);
-                    paper_height = pdf.paper_height.or(paper_height);
-                    margin_top = pdf.margin_top.or(margin_top);
-                    margin_bottom = pdf.margin_bottom.or(margin_bottom);
-                    margin_left = pdf.margin_left.or(margin_left);
-                    margin_right = pdf.margin_right.or(margin_right);
-                    page_ranges = pdf.page_ranges.or(page_ranges);
-                    ignore_invalid_page_ranges = pdf
-                        .ignore_invalid_page_ranges
-                        .or(ignore_invalid_page_ranges);
-                    header_template = pdf.header_template.or(header_template);
-                    footer_template = pdf.footer_template.or(footer_template);
-                    prefer_css_page_size = pdf.prefer_css_page_size.or(prefer_css_page_size);
-                }
-            },
+                        landscape = pdf.landscape.or(landscape);
+                        display_header_footer = pdf.display_header_footer.or(display_header_footer);
+                        print_background = pdf.print_background.or(print_background);
+                        format = pdf
+                            .format
+                            .map(|t| PaperFormat::try_from(t).unwrap())
+                            .or(format);
+                        scale = pdf.scale.or(scale);
+                        paper_width = pdf.paper_width.or(paper_width);
+                        paper_height = pdf.paper_height.or(paper_height);
+                        margin_top = pdf.margin_top.or(margin_top);
+                        margin_bottom = pdf.margin_bottom.or(margin_bottom);
+                        margin_left = pdf.margin_left.or(margin_left);
+                        margin_right = pdf.margin_right.or(margin_right);
+                        page_ranges = pdf.page_ranges.or(page_ranges);
+                        ignore_invalid_page_ranges = pdf
+                            .ignore_invalid_page_ranges
+                            .or(ignore_invalid_page_ranges);
+                        header_template = pdf.header_template.or(header_template);
+                        footer_template = pdf.footer_template.or(footer_template);
+                        prefer_css_page_size = pdf.prefer_css_page_size.or(prefer_css_page_size);
+                    }
+                },
+            };
         },
     }
 
@@ -161,7 +164,7 @@ pub fn content_to_pdf(
             }
 
             // Additional wait after event
-            sleep(Duration::from_secs(wait_after_load_time));
+            sleep(Duration::from_millis(wait_after_load_time.unwrap()));
 
             // Now safe to print to PDF
             tab.print_to_pdf(Some(pdf_options))?
@@ -226,6 +229,9 @@ pub fn content_to_pdf(
             while !*fired {
                 fired = cvar.wait(fired).unwrap();
             }
+
+            // Additional wait after event
+            sleep(Duration::from_millis(wait_after_load_time.unwrap()));
 
             // Now safe to print to PDF
             tab.print_to_pdf(Some(pdf_options))?
