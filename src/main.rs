@@ -103,7 +103,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 }
 
 fn logging(mut req: Request<()>) -> Result<Request<()>, Status> {
-    let id = ulid::Ulid::new();
+    let id = ulid::Ulid::generate();
 
     req.extensions_mut().insert(IDExtension { id });
 
